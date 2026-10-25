@@ -1,26 +1,34 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import { useState } from "react";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  useNavigate,
+  Link,
+} from "react-router-dom";
 
 import InterviewSetup from "./InterviewSetup";
 import Interview from "./Interview";
 import Results from "./Results";
 
+// =========================
+// HOME PAGE
+// =========================
+
 function Home() {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-slate-950 text-white">
-
       {/* Navbar */}
       <nav className="border-b border-slate-800">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-
           <div className="text-2xl font-bold">
-            Interview{" "}
-            <span className="text-blue-400">
-              Ace AI
-            </span>
+            Interview <span className="text-blue-400">Ace AI</span>
           </div>
 
           <div className="hidden items-center gap-8 md:flex">
-
             <a
               href="#features"
               className="text-slate-300 hover:text-white"
@@ -35,27 +43,27 @@ function Home() {
               How It Works
             </a>
 
-            <button className="rounded-lg border border-slate-700 px-5 py-2 text-sm hover:bg-slate-800">
+            {/* Login Button */}
+            <button
+              onClick={() => navigate("/login")}
+              className="rounded-lg border border-slate-700 px-5 py-2 text-sm hover:bg-slate-800"
+            >
               Login
             </button>
 
             <button
-              onClick={() => window.location.href = "/setup"}
+              onClick={() => navigate("/setup")}
               className="rounded-lg bg-blue-500 px-4 py-2 text-sm font-semibold hover:bg-blue-600"
             >
               Get Started
             </button>
-
           </div>
-
         </div>
       </nav>
 
       {/* Hero Section */}
       <main>
-
         <section className="mx-auto max-w-7xl px-6 py-24 text-center">
-
           <div className="mx-auto mb-6 inline-block rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-2 text-sm text-blue-400">
             AI-Powered Interview Preparation
           </div>
@@ -74,9 +82,8 @@ function Home() {
           </p>
 
           <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
-
             <button
-              onClick={() => window.location.href = "/setup"}
+              onClick={() => navigate("/setup")}
               className="rounded-xl bg-blue-500 px-8 py-4 font-semibold transition hover:bg-blue-600"
             >
               Start Mock Interview →
@@ -92,19 +99,15 @@ function Home() {
             >
               Explore Features
             </button>
-
           </div>
-
         </section>
 
-        {/* Features */}
+        {/* Features Section */}
         <section
           id="features"
           className="mx-auto max-w-7xl px-6 py-20"
         >
-
           <div className="mb-12 text-center">
-
             <p className="text-sm font-semibold uppercase tracking-widest text-blue-400">
               Everything You Need
             </p>
@@ -112,17 +115,11 @@ function Home() {
             <h2 className="mt-3 text-3xl font-bold md:text-4xl">
               Prepare Smarter. Interview Better.
             </h2>
-
           </div>
 
           <div className="grid gap-6 md:grid-cols-3">
-
-            {/* Feature 1 */}
             <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8">
-
-              <div className="mb-5 text-4xl">
-                🤖
-              </div>
+              <div className="mb-5 text-4xl">🤖</div>
 
               <h3 className="text-xl font-semibold">
                 AI Mock Interviews
@@ -132,15 +129,10 @@ function Home() {
                 Practice realistic technical, HR, and behavioral
                 interviews with an AI interviewer.
               </p>
-
             </div>
 
-            {/* Feature 2 */}
             <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8">
-
-              <div className="mb-5 text-4xl">
-                📊
-              </div>
+              <div className="mb-5 text-4xl">📊</div>
 
               <h3 className="text-xl font-semibold">
                 Smart Feedback
@@ -150,15 +142,10 @@ function Home() {
                 Get detailed feedback on your answers, communication,
                 confidence, and areas for improvement.
               </p>
-
             </div>
 
-            {/* Feature 3 */}
             <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8">
-
-              <div className="mb-5 text-4xl">
-                🎯
-              </div>
+              <div className="mb-5 text-4xl">🎯</div>
 
               <h3 className="text-xl font-semibold">
                 Track Your Progress
@@ -168,11 +155,8 @@ function Home() {
                 Monitor your interview performance and see how your
                 skills improve over time.
               </p>
-
             </div>
-
           </div>
-
         </section>
 
         {/* How It Works */}
@@ -180,9 +164,7 @@ function Home() {
           id="how-it-works"
           className="border-y border-slate-800 bg-slate-900/40 px-6 py-20"
         >
-
           <div className="mx-auto max-w-5xl text-center">
-
             <p className="text-sm font-semibold uppercase tracking-widest text-blue-400">
               Simple Process
             </p>
@@ -192,67 +174,43 @@ function Home() {
             </h2>
 
             <div className="mt-12 grid gap-8 md:grid-cols-3">
+              {[
+                {
+                  number: "1",
+                  title: "Choose Your Interview",
+                  description: "Select your job role and interview type.",
+                },
+                {
+                  number: "2",
+                  title: "Practice With AI",
+                  description: "Answer questions just like a real interview.",
+                },
+                {
+                  number: "3",
+                  title: "Get Your Score",
+                  description: "Receive AI feedback and improve your performance.",
+                },
+              ].map((step) => (
+                <div key={step.number}>
+                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-500 font-bold">
+                    {step.number}
+                  </div>
 
-              {/* Step 1 */}
-              <div>
+                  <h3 className="mt-5 text-lg font-semibold">
+                    {step.title}
+                  </h3>
 
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-500 font-bold">
-                  1
+                  <p className="mt-2 text-slate-400">
+                    {step.description}
+                  </p>
                 </div>
-
-                <h3 className="mt-5 text-lg font-semibold">
-                  Choose Your Interview
-                </h3>
-
-                <p className="mt-2 text-slate-400">
-                  Select your job role and interview type.
-                </p>
-
-              </div>
-
-              {/* Step 2 */}
-              <div>
-
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-500 font-bold">
-                  2
-                </div>
-
-                <h3 className="mt-5 text-lg font-semibold">
-                  Practice With AI
-                </h3>
-
-                <p className="mt-2 text-slate-400">
-                  Answer questions just like a real interview.
-                </p>
-
-              </div>
-
-              {/* Step 3 */}
-              <div>
-
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-500 font-bold">
-                  3
-                </div>
-
-                <h3 className="mt-5 text-lg font-semibold">
-                  Get Your Score
-                </h3>
-
-                <p className="mt-2 text-slate-400">
-                  Receive AI feedback and improve your performance.
-                </p>
-
-              </div>
-
+              ))}
             </div>
-
           </div>
-
         </section>
 
-        {/* CTA */}
+        {/* Call To Action */}
         <section className="mx-auto max-w-5xl px-6 py-24 text-center">
-
           <h2 className="text-4xl font-bold">
             Ready to Ace Your Interview?
           </h2>
@@ -262,62 +220,153 @@ function Home() {
           </p>
 
           <button
-            onClick={() => window.location.href = "/setup"}
+            onClick={() => navigate("/setup")}
             className="mt-8 rounded-xl bg-blue-500 px-8 py-4 font-semibold hover:bg-blue-600"
           >
             Start Practicing →
           </button>
-
         </section>
-
       </main>
 
       {/* Footer */}
       <footer className="border-t border-slate-800 px-6 py-8 text-center text-sm text-slate-500">
         © 2026 Interview Ace AI. Built with React and AI.
       </footer>
-
     </div>
   );
 }
 
+// =========================
+// LOGIN PAGE
+// =========================
 
-/* =========================
-   MAIN APP / ROUTES
-========================= */
+function Login() {
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  function handleLogin(e) {
+    e.preventDefault();
+    setError("");
+
+    if (!email.trim() || !password.trim()) {
+      setError("Please enter both email and password.");
+      return;
+    }
+
+    // Demo login only. This does not verify credentials.
+    localStorage.setItem("isLoggedIn", "true");
+    localStorage.setItem("userEmail", email.trim());
+
+    navigate("/setup");
+  }
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-slate-950 px-5 text-white">
+      <div className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900 p-8 shadow-xl">
+        <button
+          onClick={() => navigate("/")}
+          className="mb-8 text-sm text-slate-400 hover:text-white"
+        >
+          ← Back to Home
+        </button>
+
+        <h1 className="text-3xl font-bold">
+          Welcome <span className="text-blue-400">Back!</span>
+        </h1>
+
+        <p className="mt-2 text-slate-400">
+          Login to Interview Ace AI
+        </p>
+
+        <form onSubmit={handleLogin} className="mt-8 space-y-5">
+          {/* Email */}
+          <div>
+            <label className="mb-2 block text-sm text-slate-300">
+              Email Address
+            </label>
+
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none focus:border-blue-500"
+            />
+          </div>
+
+          {/* Password */}
+          <div>
+            <label className="mb-2 block text-sm text-slate-300">
+              Password
+            </label>
+
+            <div className="flex rounded-lg border border-slate-700 bg-slate-950 focus-within:border-blue-500">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                className="w-full bg-transparent px-4 py-3 text-white outline-none"
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="px-4 text-sm text-blue-400"
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
+          </div>
+
+          {/* Error Message */}
+          {error && (
+            <p className="text-sm text-red-400">
+              {error}
+            </p>
+          )}
+
+          {/* Submit */}
+          <button
+            type="submit"
+            className="w-full rounded-lg bg-blue-500 py-3 font-semibold transition hover:bg-blue-600"
+          >
+            Login
+          </button>
+        </form>
+
+        <p className="mt-6 text-center text-sm text-slate-400">
+          New to Interview Ace AI?{" "}
+          <Link
+            to="/setup"
+            className="text-blue-400 hover:text-blue-300"
+          >
+            Start Practicing
+          </Link>
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// =========================
+// MAIN APP / ROUTES
+// =========================
 
 function App() {
   return (
     <BrowserRouter>
-
       <Routes>
-
-        {/* Home */}
-        <Route
-          path="/"
-          element={<Home />}
-        />
-
-        {/* Interview Setup */}
-        <Route
-          path="/setup"
-          element={<InterviewSetup />}
-        />
-
-        {/* Interview */}
-        <Route
-          path="/interview"
-          element={<Interview />}
-        />
-
-        {/* Results */}
-        <Route
-          path="/results"
-          element={<Results />}
-        />
-
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/setup" element={<InterviewSetup />} />
+        <Route path="/interview" element={<Interview />} />
+        <Route path="/results" element={<Results />} />
       </Routes>
-
     </BrowserRouter>
   );
 }
