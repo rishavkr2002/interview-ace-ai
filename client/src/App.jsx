@@ -5,7 +5,6 @@ import {
   Routes,
   Route,
   useNavigate,
-  Link,
   Navigate,
   Outlet,
 } from "react-router-dom";
@@ -15,17 +14,24 @@ import Interview from "./Interview";
 import Results from "./Results";
 
 // =========================
-// PROTECTED ROUTE
+// PROTECTED ROUTES
 // =========================
 
 function ProtectedRoute() {
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
 
-  if (!isLoggedIn) {
-    return <Navigate to="/login" replace />;
-  }
+  return isLoggedIn ? <Outlet /> : <Navigate to="/login" replace />;
+}
 
-  return <Outlet />;
+// =========================
+// LOGOUT FUNCTION
+// =========================
+
+function logoutUser(navigate) {
+  localStorage.removeItem("isLoggedIn");
+  localStorage.removeItem("userEmail");
+
+  navigate("/", { replace: true });
 }
 
 // =========================
@@ -34,75 +40,60 @@ function ProtectedRoute() {
 
 function Home() {
   const navigate = useNavigate();
-
-  function resetLogin() {
-    localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("userEmail");
-
-    alert("Login session cleared!");
-    navigate("/login");
-  }
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
 
   return (
     <div className="min-h-screen bg-slate-950 text-white">
-
-      {/* Navbar */}
       <nav className="border-b border-slate-800">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-
           <div className="text-2xl font-bold">
             Interview <span className="text-blue-400">Ace AI</span>
           </div>
 
           <div className="hidden items-center gap-4 md:flex">
-
-            <a
-              href="#features"
-              className="text-slate-300 hover:text-white"
-            >
+            <a href="#features" className="text-slate-300 hover:text-white">
               Features
             </a>
 
-            <a
-              href="#how-it-works"
-              className="text-slate-300 hover:text-white"
-            >
+            <a href="#how-it-works" className="text-slate-300 hover:text-white">
               How It Works
             </a>
 
-            {/* Login Button */}
+            {/* LOGIN BUTTON - ALWAYS VISIBLE */}
             <button
-              onClick={() => navigate("/login")}
+              onClick={() =>
+                navigate(isLoggedIn ? "/dashboard" : "/login")
+              }
               className="rounded-lg border border-slate-700 px-5 py-2 text-sm hover:bg-slate-800"
             >
               Login
             </button>
 
-            {/* Reset Login Button */}
-            <button
-              onClick={resetLogin}
-              className="rounded-lg border border-red-500 px-4 py-2 text-sm text-red-400 hover:bg-red-500/10"
-            >
-              Reset Login
-            </button>
+            {/* LOGOUT BUTTON - VISIBLE AFTER LOGIN */}
+            {isLoggedIn && (
+              <button
+                onClick={() => logoutUser(navigate)}
+                className="rounded-lg border border-red-500 px-4 py-2 text-sm text-red-400 hover:bg-red-500/10"
+              >
+                Logout
+              </button>
+            )}
 
-            {/* Get Started */}
-            <button
-              onClick={() => navigate("/setup")}
-              className="rounded-lg bg-blue-500 px-4 py-2 text-sm font-semibold hover:bg-blue-600"
-            >
-              Get Started
-            </button>
-
+            {!isLoggedIn && (
+              <button
+                onClick={() => navigate("/login")}
+                className="rounded-lg bg-blue-500 px-4 py-2 text-sm font-semibold hover:bg-blue-600"
+              >
+                Get Started
+              </button>
+            )}
           </div>
         </div>
       </nav>
 
-      {/* Hero Section */}
       <main>
-
+        {/* HERO SECTION */}
         <section className="mx-auto max-w-7xl px-6 py-24 text-center">
-
           <div className="mx-auto mb-6 inline-block rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-2 text-sm text-blue-400">
             AI-Powered Interview Preparation
           </div>
@@ -121,12 +112,13 @@ function Home() {
           </p>
 
           <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
-
             <button
-              onClick={() => navigate("/setup")}
+              onClick={() =>
+                navigate(isLoggedIn ? "/dashboard" : "/login")
+              }
               className="rounded-xl bg-blue-500 px-8 py-4 font-semibold transition hover:bg-blue-600"
             >
-              Start Mock Interview →
+              {isLoggedIn ? "Go to Dashboard →" : "Start Mock Interview →"}
             </button>
 
             <button
@@ -139,18 +131,12 @@ function Home() {
             >
               Explore Features
             </button>
-
           </div>
         </section>
 
-        {/* Features Section */}
-        <section
-          id="features"
-          className="mx-auto max-w-7xl px-6 py-20"
-        >
-
+        {/* FEATURES */}
+        <section id="features" className="mx-auto max-w-7xl px-6 py-20">
           <div className="mb-12 text-center">
-
             <p className="text-sm font-semibold uppercase tracking-widest text-blue-400">
               Everything You Need
             </p>
@@ -158,31 +144,21 @@ function Home() {
             <h2 className="mt-3 text-3xl font-bold md:text-4xl">
               Prepare Smarter. Interview Better.
             </h2>
-
           </div>
 
           <div className="grid gap-6 md:grid-cols-3">
-
             <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8">
               <div className="mb-5 text-4xl">🤖</div>
-
-              <h3 className="text-xl font-semibold">
-                AI Mock Interviews
-              </h3>
-
+              <h3 className="text-xl font-semibold">AI Mock Interviews</h3>
               <p className="mt-3 leading-7 text-slate-400">
-                Practice realistic technical, HR, and behavioral
-                interviews with an AI interviewer.
+                Practice realistic technical, HR, and behavioral interviews
+                with an AI interviewer.
               </p>
             </div>
 
             <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8">
               <div className="mb-5 text-4xl">📊</div>
-
-              <h3 className="text-xl font-semibold">
-                Smart Feedback
-              </h3>
-
+              <h3 className="text-xl font-semibold">Smart Feedback</h3>
               <p className="mt-3 leading-7 text-slate-400">
                 Get detailed feedback on your answers, communication,
                 confidence, and areas for improvement.
@@ -191,28 +167,21 @@ function Home() {
 
             <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8">
               <div className="mb-5 text-4xl">🎯</div>
-
-              <h3 className="text-xl font-semibold">
-                Track Your Progress
-              </h3>
-
+              <h3 className="text-xl font-semibold">Track Your Progress</h3>
               <p className="mt-3 leading-7 text-slate-400">
-                Monitor your interview performance and see how your
-                skills improve over time.
+                Monitor your interview performance and see how your skills
+                improve over time.
               </p>
             </div>
-
           </div>
         </section>
 
-        {/* How It Works */}
+        {/* HOW IT WORKS */}
         <section
           id="how-it-works"
           className="border-y border-slate-800 bg-slate-900/40 px-6 py-20"
         >
-
           <div className="mx-auto max-w-5xl text-center">
-
             <p className="text-sm font-semibold uppercase tracking-widest text-blue-400">
               Simple Process
             </p>
@@ -222,7 +191,6 @@ function Home() {
             </h2>
 
             <div className="mt-12 grid gap-8 md:grid-cols-3">
-
               {[
                 {
                   number: "1",
@@ -237,12 +205,11 @@ function Home() {
                 {
                   number: "3",
                   title: "Get Your Score",
-                  description: "Receive AI feedback and improve your performance.",
+                  description:
+                    "Receive AI feedback and improve your performance.",
                 },
               ].map((step) => (
-
                 <div key={step.number}>
-
                   <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-500 font-bold">
                     {step.number}
                   </div>
@@ -254,18 +221,14 @@ function Home() {
                   <p className="mt-2 text-slate-400">
                     {step.description}
                   </p>
-
                 </div>
-
               ))}
-
             </div>
           </div>
         </section>
 
-        {/* Call To Action */}
+        {/* CALL TO ACTION */}
         <section className="mx-auto max-w-5xl px-6 py-24 text-center">
-
           <h2 className="text-4xl font-bold">
             Ready to Ace Your Interview?
           </h2>
@@ -275,21 +238,19 @@ function Home() {
           </p>
 
           <button
-            onClick={() => navigate("/setup")}
+            onClick={() =>
+              navigate(isLoggedIn ? "/dashboard" : "/login")
+            }
             className="mt-8 rounded-xl bg-blue-500 px-8 py-4 font-semibold hover:bg-blue-600"
           >
-            Start Practicing →
+            {isLoggedIn ? "Go to Dashboard →" : "Start Practicing →"}
           </button>
-
         </section>
-
       </main>
 
-      {/* Footer */}
       <footer className="border-t border-slate-800 px-6 py-8 text-center text-sm text-slate-500">
         © 2026 Interview Ace AI. Built with React and AI.
       </footer>
-
     </div>
   );
 }
@@ -315,18 +276,16 @@ function Login() {
       return;
     }
 
-    // Demo login only. No server-side verification yet.
+    // Demo login only. No backend authentication yet.
     localStorage.setItem("isLoggedIn", "true");
     localStorage.setItem("userEmail", email.trim());
 
-    navigate("/setup", { replace: true });
+    navigate("/dashboard", { replace: true });
   }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-950 px-5 text-white">
-
       <div className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900 p-8 shadow-xl">
-
         <button
           onClick={() => navigate("/")}
           className="mb-8 text-sm text-slate-400 hover:text-white"
@@ -343,10 +302,7 @@ function Login() {
         </p>
 
         <form onSubmit={handleLogin} className="mt-8 space-y-5">
-
-          {/* Email */}
           <div>
-
             <label className="mb-2 block text-sm text-slate-300">
               Email Address
             </label>
@@ -359,18 +315,14 @@ function Login() {
               placeholder="Enter your email"
               className="w-full rounded-lg border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none focus:border-blue-500"
             />
-
           </div>
 
-          {/* Password */}
           <div>
-
             <label className="mb-2 block text-sm text-slate-300">
               Password
             </label>
 
             <div className="flex rounded-lg border border-slate-700 bg-slate-950 focus-within:border-blue-500">
-
               <input
                 type={showPassword ? "text" : "password"}
                 required
@@ -387,32 +339,105 @@ function Login() {
               >
                 {showPassword ? "Hide" : "Show"}
               </button>
-
             </div>
           </div>
 
-          {/* Error */}
           {error && (
-            <p className="text-sm text-red-400">
-              {error}
-            </p>
+            <p className="text-sm text-red-400">{error}</p>
           )}
 
-          {/* Login Button */}
           <button
             type="submit"
             className="w-full rounded-lg bg-blue-500 py-3 font-semibold transition hover:bg-blue-600"
           >
             Login
           </button>
-
         </form>
 
         <p className="mt-6 text-center text-sm text-slate-400">
-          Enter your email and password to continue to interview setup.
+          Login to access your Interview Ace AI dashboard.
         </p>
-
       </div>
+    </div>
+  );
+}
+
+// =========================
+// DASHBOARD PAGE
+// =========================
+
+function Dashboard() {
+  const navigate = useNavigate();
+  const email = localStorage.getItem("userEmail") || "User";
+
+  return (
+    <div className="min-h-screen bg-slate-950 text-white">
+      <nav className="border-b border-slate-800">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
+          <h1 className="text-2xl font-bold">
+            Interview <span className="text-blue-400">Ace AI</span>
+          </h1>
+
+          <button
+            onClick={() => logoutUser(navigate)}
+            className="rounded-lg border border-red-500 px-5 py-2 text-sm text-red-400 hover:bg-red-500/10"
+          >
+            Logout
+          </button>
+        </div>
+      </nav>
+
+      <main className="mx-auto max-w-7xl px-6 py-16">
+        <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8 md:p-12">
+          <p className="font-semibold text-blue-400">
+            YOUR DASHBOARD
+          </p>
+
+          <h2 className="mt-4 text-3xl font-bold md:text-4xl">
+            Welcome back!
+          </h2>
+
+          <p className="mt-3 text-slate-400">{email}</p>
+
+          <p className="mt-6 max-w-2xl leading-7 text-slate-300">
+            Get ready to improve your interview skills. Practice with
+            AI-powered mock interviews and receive feedback on your answers.
+          </p>
+
+          <button
+            onClick={() => navigate("/setup")}
+            className="mt-8 rounded-xl bg-blue-500 px-8 py-4 font-semibold hover:bg-blue-600"
+          >
+            Start New Interview →
+          </button>
+        </div>
+
+        <div className="mt-8 grid gap-6 md:grid-cols-3">
+          <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
+            <div className="text-3xl">🤖</div>
+            <h3 className="mt-4 text-xl font-semibold">AI Interview</h3>
+            <p className="mt-2 text-slate-400">
+              Practice with AI-generated evaluation.
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
+            <div className="text-3xl">📊</div>
+            <h3 className="mt-4 text-xl font-semibold">Performance</h3>
+            <p className="mt-2 text-slate-400">
+              Review your answers and feedback after interviews.
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
+            <div className="text-3xl">🎯</div>
+            <h3 className="mt-4 text-xl font-semibold">Improve Skills</h3>
+            <p className="mt-2 text-slate-400">
+              Identify areas where you can improve.
+            </p>
+          </div>
+        </div>
+      </main>
     </div>
   );
 }
@@ -424,27 +449,19 @@ function Login() {
 function App() {
   return (
     <BrowserRouter>
-
       <Routes>
-
-        {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
 
-        {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
-
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/setup" element={<InterviewSetup />} />
           <Route path="/interview" element={<Interview />} />
           <Route path="/results" element={<Results />} />
-
         </Route>
 
-        {/* Unknown Routes */}
         <Route path="*" element={<Navigate to="/" replace />} />
-
       </Routes>
-
     </BrowserRouter>
   );
 }
