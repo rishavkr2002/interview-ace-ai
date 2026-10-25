@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 
 function InterviewSetup() {
@@ -5,8 +6,14 @@ function InterviewSetup() {
   const [experience, setExperience] = useState("");
   const [interviewType, setInterviewType] = useState("");
   const [questions, setQuestions] = useState("5");
+  const [error, setError] = useState("");
 
   const startInterview = () => {
+    if (!jobRole || !experience || !interviewType || !questions) {
+      setError("Please select all interview settings before continuing.");
+      return;
+    }
+
     const interviewData = {
       jobRole,
       experience,
@@ -14,10 +21,12 @@ function InterviewSetup() {
       questions: Number(questions),
     };
 
-    localStorage.setItem(
-      "interviewData",
-      JSON.stringify(interviewData)
-    );
+    localStorage.setItem("interviewData", JSON.stringify(interviewData));
+
+    // Clear previous interview data
+    localStorage.removeItem("interviewQuestions");
+    localStorage.removeItem("interviewAnswers");
+    localStorage.removeItem("interviewEvaluations");
 
     window.location.href = "/interview";
   };
@@ -25,7 +34,6 @@ function InterviewSetup() {
   return (
     <div className="min-h-screen bg-slate-950 text-white px-6 py-12">
       <div className="max-w-3xl mx-auto">
-
         <h1 className="text-4xl font-bold text-center mb-3">
           Set Up Your Interview
         </h1>
@@ -35,7 +43,7 @@ function InterviewSetup() {
         </p>
 
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 space-y-6">
-
+          {/* JOB ROLE */}
           <div>
             <label className="block mb-2 font-medium">
               Job Role
@@ -43,7 +51,10 @@ function InterviewSetup() {
 
             <select
               value={jobRole}
-              onChange={(e) => setJobRole(e.target.value)}
+              onChange={(e) => {
+                setJobRole(e.target.value);
+                setError("");
+              }}
               className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3"
             >
               <option value="">Select Job Role</option>
@@ -55,6 +66,7 @@ function InterviewSetup() {
             </select>
           </div>
 
+          {/* EXPERIENCE */}
           <div>
             <label className="block mb-2 font-medium">
               Experience Level
@@ -62,7 +74,10 @@ function InterviewSetup() {
 
             <select
               value={experience}
-              onChange={(e) => setExperience(e.target.value)}
+              onChange={(e) => {
+                setExperience(e.target.value);
+                setError("");
+              }}
               className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3"
             >
               <option value="">Select Experience</option>
@@ -73,6 +88,7 @@ function InterviewSetup() {
             </select>
           </div>
 
+          {/* INTERVIEW TYPE */}
           <div>
             <label className="block mb-2 font-medium">
               Interview Type
@@ -80,7 +96,10 @@ function InterviewSetup() {
 
             <select
               value={interviewType}
-              onChange={(e) => setInterviewType(e.target.value)}
+              onChange={(e) => {
+                setInterviewType(e.target.value);
+                setError("");
+              }}
               className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3"
             >
               <option value="">Select Interview Type</option>
@@ -90,6 +109,7 @@ function InterviewSetup() {
             </select>
           </div>
 
+          {/* QUESTION COUNT */}
           <div>
             <label className="block mb-2 font-medium">
               Number of Questions
@@ -107,13 +127,18 @@ function InterviewSetup() {
             </select>
           </div>
 
+          {error && (
+            <p className="text-red-400 text-sm">
+              {error}
+            </p>
+          )}
+
           <button
             onClick={startInterview}
-            className="w-full bg-blue-500 hover:bg-blue-600 py-3 rounded-lg font-semibold text-lg"
+            className="w-full bg-blue-500 hover:bg-blue-600 py-3 rounded-lg font-semibold text-lg transition"
           >
             Start Interview →
           </button>
-
         </div>
       </div>
     </div>
